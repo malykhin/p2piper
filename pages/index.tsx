@@ -55,7 +55,7 @@ export default function Home({ sessionId, baseUrl }) {
         )}
       </main>
       <footer className={styles.footer}>
-        <a href="https://github.com/github" target="_blank">
+        <a href="https://github.com/malykhin/p2piper" target="_blank">
           <img
             src="https://github.githubassets.com/images/modules/site/icons/footer/github-mark.svg"
             height="20"
