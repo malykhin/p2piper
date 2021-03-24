@@ -1,0 +1,18 @@
+.label {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.textarea {
+  resize: none;
+  font-size: 1.2em;
+  width: 40vw;
+  height: 30vh;
+}
+
+@media (max-width: 600px) {
+  .textarea {
+    width: 80vw;
+  }
+}

@@ -1,0 +1,30 @@
+.fileInput {
+  height: 1px;
+  width: 1px;
+  background-color: transparent;
+  outline: none;
+}
+
+.label {
+  display: flex;
+  height: 28px;
+  width: 120px;
+  border: 1px solid lightgrey;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  &:hover {
+    border: 1px solid grey;
+  }
+}
+
+.disabled {
+  color: lightgrey;
+
+  &:hover {
+    border: 1px solid lightgrey;
+  }
+}
