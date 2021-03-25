@@ -228,10 +228,6 @@ resource "aws_autoscaling_group" "p2piper_autoscaling_group" {
 
 resource "aws_route53_zone" "p2piper_route53_zone" {
   name = "p2piper.com"
-
-  vpc {
-    vpc_id = aws_vpc.p2piper_vpc.id
-  }
 }
 
 resource "aws_route53_record" "p2piper" {
