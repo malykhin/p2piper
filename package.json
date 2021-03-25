@@ -30,6 +30,7 @@
     "@types/react": "^17.0.3",
     "@types/socket.io-client": "^1.4.36",
     "nodemon": "^2.0.7",
+    "pm2": "^4.5.5",
     "ts-node": "^9.1.1",
     "typed-scss-modules": "^4.1.0",
     "typescript": "^4.2.3"
