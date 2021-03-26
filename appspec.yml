@@ -5,6 +5,6 @@ files:
     destination: /home/ubuntu/app
 hooks:
   ApplicationStart:
-    - location: p2piper/app_start.sh
+    - location: app_start.sh
       timeout: 300
       runas: ubuntu
