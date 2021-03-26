@@ -4,6 +4,7 @@ module.exports = {
       name: 'p2piper',
       script: '/home/ubuntu/app/build/index.js',
       env: {
+        NODE_ENV: 'production',
         APP_ENV: 'production',
         BASE_URL: 'http://p2piper.com',
         PORT: 80,

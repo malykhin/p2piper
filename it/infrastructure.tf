@@ -222,13 +222,13 @@ resource "aws_elb" "p2piper_elb" {
 
   cross_zone_load_balancing = true
 
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    interval            = 30
-    target              = "HTTP:80/"
-  }
+  # health_check {
+  #   healthy_threshold   = 2
+  #   unhealthy_threshold = 2
+  #   timeout             = 3
+  #   interval            = 30
+  #   target              = "HTTP:80/"
+  # }
 
   listener {
     lb_port           = 80
@@ -246,7 +246,7 @@ resource "aws_autoscaling_group" "p2piper_autoscaling_group" {
   desired_capacity = 2
   max_size         = 2
 
-  # health_check_type = "ELB"
+  health_check_type = "EC2"
   # load_balancers = [
   #   aws_elb.p2piper_elb.id
   # ]
