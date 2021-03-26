@@ -5,7 +5,6 @@ phases:
     commands:
       - npm install
 
-      
   pre_build:
     commands:
       - mkdir output
@@ -14,10 +13,8 @@ phases:
     commands:
       - npm run build
 
-
 artifacts:
   files:
-    - appspec.yml
     - '**/*'
 
     
