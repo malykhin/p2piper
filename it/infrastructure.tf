@@ -151,7 +151,7 @@ resource "aws_launch_configuration" "p2piper_lc" {
   instance_type = "t2.micro"
   key_name      = "${local.name_prefix}_p2piper_key"
 
-  security_groups             = [aws_security_group.p2piper_allow_http_sg.id]
+  security_groups             = [aws_security_group.p2piper_allow_http_sg.id, aws_security_group.p2piper_allow_redis_sg.id]
   associate_public_ip_address = true
 
   iam_instance_profile = aws_iam_instance_profile.iam_p2piper_instance_profile.name
@@ -268,5 +268,65 @@ resource "aws_route53_record" "p2piper" {
     name                   = aws_elb.p2piper_elb.dns_name
     zone_id                = aws_elb.p2piper_elb.zone_id
     evaluate_target_health = true
+  }
+}
+
+resource "aws_subnet" "p2piper_redis_sunbet_a" {
+  vpc_id            = aws_vpc.p2piper_vpc.id
+  cidr_block        = "10.0.2.0/24"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    Name = "${local.name_prefix}-redis-subnet-a"
+  }
+}
+
+resource "aws_subnet" "p2piper_redis_sunbet_b" {
+  vpc_id            = aws_vpc.p2piper_vpc.id
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = "us-east-1b"
+
+  tags = {
+    Name = "${local.name_prefix}-redis-subnet-b"
+  }
+}
+
+resource "aws_elasticache_subnet_group" "p2pier_subnet_group" {
+  name       = "${local.name_prefix}-redis-subnet-group"
+  subnet_ids = [aws_subnet.p2piper_redis_sunbet_a.id, aws_subnet.p2piper_redis_sunbet_b.id]
+}
+
+resource "aws_elasticache_cluster" "p2piper_redis" {
+  cluster_id           = "${local.name_prefix}-cluster-example"
+  engine               = "redis"
+  node_type            = "cache.t2.micro"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis3.2"
+  engine_version       = "3.2.10"
+  port                 = 6379
+  subnet_group_name    = aws_elasticache_subnet_group.p2pier_subnet_group.name
+  security_group_ids   = [aws_security_group.p2piper_allow_redis_sg.id]
+}
+
+resource "aws_security_group" "p2piper_allow_redis_sg" {
+  name   = "${local.name_prefix}_allow_redis"
+  vpc_id = aws_vpc.p2piper_vpc.id
+
+  ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${local.name_prefix}_allow_redis_sg"
   }
 }

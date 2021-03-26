@@ -8,7 +8,7 @@ module.exports = {
         BASE_URL: 'http://p2piper.com/',
         PORT: 80,
         ORIGIN: 'http://p2piper.com/',
-        REDIS_HOST: 'localhost',
+        REDIS_HOST: 'p2piper-prod-cluster-example.gxxc44.0001.use1.cache.amazonaws.com',
         REDIS_PORT: '6379',
         REDIS_USE_TLS: true,
         AWS_REGION: 'us-east-1',
