@@ -93,6 +93,31 @@ resource "aws_route_table_association" "p2piper_vpc_us_east_1b_public" {
   route_table_id = aws_route_table.p2piper_vpc_public.id
 }
 
+
+
+resource "aws_security_group" "p2piper_allow_ssh_sg" {
+  name   = "${local.name_prefix}_allow_ssh"
+  vpc_id = aws_vpc.p2piper_vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${local.name_prefix}_allow_ssh_sg"
+  }
+}
+
 resource "aws_security_group" "p2piper_allow_http_sg" {
   name   = "${local.name_prefix}_allow_http"
   vpc_id = aws_vpc.p2piper_vpc.id
@@ -151,7 +176,7 @@ resource "aws_launch_configuration" "p2piper_lc" {
   instance_type = "t2.micro"
   key_name      = "${local.name_prefix}_p2piper_key"
 
-  security_groups             = [aws_security_group.p2piper_allow_http_sg.id, aws_security_group.p2piper_allow_redis_sg.id]
+  security_groups             = [aws_security_group.p2piper_allow_http_sg.id, aws_security_group.p2piper_allow_ssh_sg.id, aws_security_group.p2piper_allow_redis_sg.id]
   associate_public_ip_address = true
 
   iam_instance_profile = aws_iam_instance_profile.iam_p2piper_instance_profile.name
@@ -221,10 +246,10 @@ resource "aws_autoscaling_group" "p2piper_autoscaling_group" {
   desired_capacity = 2
   max_size         = 2
 
-  health_check_type = "ELB"
-  load_balancers = [
-    aws_elb.p2piper_elb.id
-  ]
+  # health_check_type = "ELB"
+  # load_balancers = [
+  #   aws_elb.p2piper_elb.id
+  # ]
 
   launch_configuration = aws_launch_configuration.p2piper_lc.name
 
