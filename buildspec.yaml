@@ -3,10 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14
-    commands:
-      - node -v
-      - npm ci
+      nodejs: 14      
 
   pre_build:
     commands:
@@ -14,6 +11,8 @@ phases:
 
   build:
     commands:
+      - node -v
+      - npm ci
       - npm run build
 
 artifacts:
