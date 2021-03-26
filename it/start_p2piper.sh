@@ -1,11 +1,11 @@
 #!/bin/bash
 
 apt-get -y update
-apt-get -y install ruby wget curl
+apt-get -y install ruby wget
 
-curl -sL https://deb.nodesource.com/setup_15.x -o nodesource_setup.sh
-chmod +x ./nodesource_setup.sh
-sudo ./nodesource_setup.sh
+wget https://deb.nodesource.com/setup_14.x
+sudo chmod +x ./setup_14.x
+sudo ./setup_14.x
 apt-get -y install nodejs
 
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb

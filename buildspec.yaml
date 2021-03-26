@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - node -v
-      - npm install
+      - npm ci
 
   pre_build:
     commands:
