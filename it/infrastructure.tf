@@ -116,6 +116,34 @@ resource "aws_security_group" "p2piper_allow_http_sg" {
   }
 }
 
+data "template_file" "p2piper_policy_template" {
+  template = file("./templates/p2piper_ec2_policy_template.json")
+}
+
+resource "aws_iam_policy" "p2piper_policy" {
+  name   = "${local.name_prefix}-p2piper_policy"
+  policy = data.template_file.p2piper_policy_template.rendered
+}
+
+data "template_file" "p2piper_instance_profile_role_template" {
+  template = file("./templates/p2piper_instance_profile_role_template.json")
+}
+
+resource "aws_iam_role" "iam_p2piper_instance_profile_role" {
+  name               = "${local.name_prefix}-iam_p2piper_instance_profile_role"
+  assume_role_policy = data.template_file.p2piper_instance_profile_role_template.rendered
+}
+
+resource "aws_iam_instance_profile" "iam_p2piper_instance_profile" {
+  name = "${local.name_prefix}-iam_p2piper_instance_profile"
+  role = aws_iam_role.iam_p2piper_instance_profile_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "iam_p2piper_instance_profile_role_policy_attachment" {
+  role       = aws_iam_role.iam_p2piper_instance_profile_role.name
+  policy_arn = aws_iam_policy.p2piper_policy.arn
+}
+
 resource "aws_launch_configuration" "p2piper_lc" {
   name_prefix = "${local.name_prefix}_"
 
@@ -126,7 +154,8 @@ resource "aws_launch_configuration" "p2piper_lc" {
   security_groups             = [aws_security_group.p2piper_allow_http_sg.id]
   associate_public_ip_address = true
 
-  user_data = file("start_p2piper.sh")
+  iam_instance_profile = aws_iam_instance_profile.iam_p2piper_instance_profile.name
+  user_data            = file("start_p2piper.sh")
 
   lifecycle {
     create_before_destroy = true

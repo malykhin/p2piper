@@ -1,0 +1,92 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:Get*", "s3:List*"],
+      "Resource": ["arn:aws:s3:::codepipeline-us-east-1-774086574864/*"]
+    },
+    {
+      "Action": [
+        "codedeploy:Batch*",
+        "codedeploy:CreateDeployment",
+        "codedeploy:Get*",
+        "codedeploy:List*",
+        "codedeploy:RegisterApplicationRevision"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Sid": "CodeStarNotificationsListAccess",
+      "Effect": "Allow",
+      "Action": [
+        "codestar-notifications:ListNotificationRules",
+        "codestar-notifications:ListTargets",
+        "codestar-notifications:ListTagsforResource",
+        "codestar-notifications:ListEventTypes"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CodeStarNotificationsChatbotAccess",
+      "Effect": "Allow",
+      "Action": ["chatbot:DescribeSlackChannelConfigurations"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "SNSTopicListAccess",
+      "Effect": "Allow",
+      "Action": ["sns:ListTopics"],
+      "Resource": "*"
+    },
+    {
+      "Action": "codedeploy:*",
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Sid": "CodeStarNotificationsReadWriteAccess",
+      "Effect": "Allow",
+      "Action": [
+        "codestar-notifications:CreateNotificationRule",
+        "codestar-notifications:DescribeNotificationRule",
+        "codestar-notifications:UpdateNotificationRule",
+        "codestar-notifications:DeleteNotificationRule",
+        "codestar-notifications:Subscribe",
+        "codestar-notifications:Unsubscribe"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "codestar-notifications:NotificationsForResource": "arn:aws:codedeploy:*"
+        }
+      }
+    },
+    {
+      "Sid": "CodeStarNotificationsSNSTopicCreateAccess",
+      "Effect": "Allow",
+      "Action": ["sns:CreateTopic", "sns:SetTopicAttributes"],
+      "Resource": "arn:aws:sns:*:*:codestar-notifications*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricData",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeTags",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams",
+        "logs:DescribeLogGroups",
+        "logs:CreateLogStream",
+        "logs:CreateLogGroup"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:GetParameter"],
+      "Resource": "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
+    }
+  ]
+}
