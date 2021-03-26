@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'p2piper',
-      script: '/home/ubuntu/app/p2piper/index.js',
+      script: '/home/ubuntu/app/index.js',
       env: {
         APP_ENV: 'production',
         BASE_URL: 'http://p2piper.com/',
