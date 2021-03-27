@@ -47,7 +47,7 @@ app.prepare().then(() => {
   io.adapter(createAdapter({ pubClient, subClient }))
   io.on('connection', async (socket: Socket) => {
     try {
-      socket.on('error', (error) => logger.error(error))
+      socket.on('error', (error) => logger.info(error))
 
       const sessionId = socket.handshake.auth.sessionId
       const token = socket.handshake.auth.token
@@ -93,7 +93,7 @@ app.prepare().then(() => {
         })
       }
     } catch (error) {
-      logger.error(error)
+      logger.info(error)
     }
   })
 
