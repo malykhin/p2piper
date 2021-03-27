@@ -53,7 +53,9 @@ app.prepare().then(() => {
 
     logger.info(`connection_${sessionId}_${token}`)
     if (token && (await offer.has(token))) {
-      socket.emit('offer', await offer.get(token))
+      const o = await offer.get(token)
+      logger.info('offer_on_connection', o)
+      socket.emit('offer', o)
       socket.join(token)
 
       socket.on('get_offer', async () => {
