@@ -107,6 +107,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
         await pc.setLocalDescription({} as RTCSessionDescriptionInit)
         signaling.send('set_offer', { description: pc.localDescription })
       } catch (error) {
+        console.log(error)
         setError(error)
       } finally {
         makingOffer.current = false
@@ -141,11 +142,13 @@ export default function useWebRtc(basePath: string, sessionId: string) {
             await pc.addIceCandidate(candidate)
           } catch (error) {
             if (!ignoreOffer.current) {
+              console.log(error)
               setError(error)
             }
           }
         }
       } catch (error) {
+        console.log(error)
         setError(error)
       }
     })
