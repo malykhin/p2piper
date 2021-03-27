@@ -5,6 +5,7 @@ import { saveAs } from 'file-saver'
 import SignalingChannel from '../utils/SignallingChannel'
 import FileStorage from '../utils/FileStorage'
 import { useFCReducer } from './useFCReducer'
+import log from '../utils/logger'
 
 const MAX_CHUNK_SIZE = 10 * 1024
 
@@ -67,11 +68,11 @@ export default function useWebRtc(basePath: string, sessionId: string) {
       sessionId,
       token,
       () => {
-        console.log('connected', sessionId, token)
+        log('connected', sessionId, token)
         setIsAPIConnected(true)
       },
       () => {
-        console.log('disconnected', sessionId, token)
+        log('disconnected', sessionId, token)
         setIsAPIConnected(false)
       },
     )
@@ -79,7 +80,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
     const pc = new RTCPeerConnection(configuration)
 
     pc.onicecandidate = ({ candidate }) => {
-      console.log('onicecandidate', candidate)
+      log('onicecandidate', candidate)
       if (candidate) {
         signaling.send('candidate', { candidate })
       }
@@ -104,10 +105,11 @@ export default function useWebRtc(basePath: string, sessionId: string) {
       }
       try {
         makingOffer.current = true
-        await pc.setLocalDescription({} as RTCSessionDescriptionInit)
+        const offer = await pc.createOffer()
+        await pc.setLocalDescription(offer)
         signaling.send('set_offer', { description: pc.localDescription })
       } catch (error) {
-        console.log(error)
+        log(error)
         setError(error)
       } finally {
         makingOffer.current = false
@@ -134,7 +136,8 @@ export default function useWebRtc(basePath: string, sessionId: string) {
           await pc.setRemoteDescription(description)
           isSettingRemoteAnswerPending.current = false
           if (description.type === 'offer') {
-            await pc.setLocalDescription({} as RTCSessionDescriptionInit)
+            const answer = await pc.createAnswer()
+            await pc.setLocalDescription(answer)
             signaling.send('answer', { description: pc.localDescription })
           }
         } else if (candidate) {
@@ -142,13 +145,13 @@ export default function useWebRtc(basePath: string, sessionId: string) {
             await pc.addIceCandidate(candidate)
           } catch (error) {
             if (!ignoreOffer.current) {
-              console.log(error)
+              log(error)
               setError(error)
             }
           }
         }
       } catch (error) {
-        console.log(error)
+        log(error)
         setError(error)
       }
     })
@@ -172,7 +175,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
       receiveChannel.onmessage = (e: MessageEvent) => handleDownStreamMessage(e.data)
       receiveChannel.onopen = () => setIsDownstreamConnected(true)
       receiveChannel.onclose = () => setIsDownstreamConnected(false)
-      receiveChannel.onerror = console.log
+      receiveChannel.onerror = log
     }
 
     const dc = pc.createDataChannel('data', {
@@ -182,7 +185,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
 
     dc.onclose = () => setIsUpstreamConnected(false)
     dc.onopen = () => setIsUpstreamConnected(true)
-    dc.onerror = console.log
+    dc.onerror = log
 
     dataChannel.current = dc
   }, [basePath, reload])
