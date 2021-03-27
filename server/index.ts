@@ -46,47 +46,54 @@ app.prepare().then(() => {
 
   io.adapter(createAdapter({ pubClient, subClient }))
   io.on('connection', async (socket: Socket) => {
-    socket.on('error', (error) => logger.error(error))
+    try {
+      socket.on('error', (error) => logger.error(error))
 
-    const sessionId = socket.handshake.auth.sessionId
-    const token = socket.handshake.auth.token
+      const sessionId = socket.handshake.auth.sessionId
+      const token = socket.handshake.auth.token
 
-    logger.info(`connection_${sessionId}_${token}`)
-    if (token && (await offer.has(token))) {
-      const o = await offer.get(token)
-      logger.info('offer_on_connection', o)
-      socket.emit('offer', o)
-      socket.join(token)
+      logger.info(`connection_${sessionId}_${token}`)
+      const isTokenExist = await offer.has(token)
+      logger.info(`isTokenExist${sessionId}_${token}_isTokenExist`)
 
-      socket.on('get_offer', async () => {
-        logger.info(`get_offer_${sessionId}_${token}`)
+      if (token && isTokenExist) {
         const o = await offer.get(token)
-        socket.emit('candidate', o)
-      })
+        logger.info('offer_on_connection', o)
+        socket.emit('offer', o)
+        socket.join(token)
 
-      socket.on('answer', (answer) => {
-        logger.info(`answer_${sessionId}_${token}`)
-        socket.to(token).emit('candidate', answer)
-      })
-      socket.on('candidate', (candidate) => {
-        logger.info(`candidate_${sessionId}_${token}`)
-        socket.to(token).emit('candidate', candidate)
-      })
-    } else {
-      logger.info(`session_${sessionId}`)
-      socket.emit('session', sessionId)
+        socket.on('get_offer', async () => {
+          logger.info(`get_offer_${sessionId}_${token}`)
+          const o = await offer.get(token)
+          socket.emit('candidate', o)
+        })
 
-      socket.join(sessionId)
+        socket.on('answer', (answer) => {
+          logger.info(`answer_${sessionId}_${token}`)
+          socket.to(token).emit('candidate', answer)
+        })
+        socket.on('candidate', (candidate) => {
+          logger.info(`candidate_${sessionId}_${token}`)
+          socket.to(token).emit('candidate', candidate)
+        })
+      } else {
+        logger.info(`session_${sessionId}`)
+        socket.emit('session', sessionId)
 
-      socket.on('set_offer', (msg) => {
-        logger.info(`set_offer_${sessionId}`)
-        offer.set(sessionId, msg)
-      })
+        socket.join(sessionId)
 
-      socket.on('candidate', (candidate) => {
-        logger.info(`candidate_wo_token_${sessionId}`)
-        socket.to(token).emit('candidate', candidate)
-      })
+        socket.on('set_offer', (msg) => {
+          logger.info(`set_offer_${sessionId}`)
+          offer.set(sessionId, msg)
+        })
+
+        socket.on('candidate', (candidate) => {
+          logger.info(`candidate_wo_token_${sessionId}`)
+          socket.to(token).emit('candidate', candidate)
+        })
+      }
+    } catch (error) {
+      logger.error(error)
     }
   })
 
