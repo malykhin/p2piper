@@ -25,6 +25,8 @@ app.prepare().then(() => {
   const io = new Server(httpServer, {
     cors: {
       origin: config.origin,
+      methods: ['GET', 'POST'],
+      credentials: true,
     },
   })
 
@@ -49,31 +51,38 @@ app.prepare().then(() => {
     const sessionId = socket.handshake.auth.sessionId
     const token = socket.handshake.auth.token
 
+    logger.info(`connection_${sessionId}_${token}`)
     if (token && (await offer.has(token))) {
       socket.emit('offer', await offer.get(token))
       socket.join(token)
 
       socket.on('get_offer', async () => {
+        logger.info(`get_offer_${sessionId}_${token}`)
         const o = await offer.get(token)
         socket.emit('candidate', o)
       })
 
       socket.on('answer', (answer) => {
+        logger.info(`answer_${sessionId}_${token}`)
         socket.to(token).emit('candidate', answer)
       })
       socket.on('candidate', (candidate) => {
+        logger.info(`candidate_${sessionId}_${token}`)
         socket.to(token).emit('candidate', candidate)
       })
     } else {
+      logger.info(`session_${sessionId}`)
       socket.emit('session', sessionId)
 
       socket.join(sessionId)
 
       socket.on('set_offer', (msg) => {
+        logger.info(`set_offer_${sessionId}`)
         offer.set(sessionId, msg)
       })
 
       socket.on('candidate', (candidate) => {
+        logger.info(`candidate_wo_token_${sessionId}`)
         socket.to(token).emit('candidate', candidate)
       })
     }

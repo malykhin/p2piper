@@ -66,13 +66,20 @@ export default function useWebRtc(basePath: string, sessionId: string) {
       basePath,
       sessionId,
       token,
-      () => setIsAPIConnected(true),
-      () => setIsAPIConnected(false),
+      () => {
+        console.log('connected', sessionId, token)
+        setIsAPIConnected(true)
+      },
+      () => {
+        console.log('disconnected', sessionId, token)
+        setIsAPIConnected(false)
+      },
     )
 
     const pc = new RTCPeerConnection(configuration)
 
     pc.onicecandidate = ({ candidate }) => {
+      console.log('onicecandidate', candidate)
       if (candidate) {
         signaling.send('candidate', { candidate })
       }
