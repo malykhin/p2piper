@@ -210,35 +210,6 @@ resource "aws_security_group" "p2piper_alb_http_sg" {
   }
 }
 
-# resource "aws_elb" "p2piper_elb" {
-#   name = "${local.name_prefix}-elb"
-#   security_groups = [
-#     aws_security_group.p2piper_elb_http_sg.id
-#   ]
-#   subnets = [
-#     aws_subnet.p2piper_public_us_east_1a.id,
-#     aws_subnet.p2piper_public_us_east_1b.id
-#   ]
-
-#   cross_zone_load_balancing = true
-
-#   # health_check {
-#   #   healthy_threshold   = 2
-#   #   unhealthy_threshold = 2
-#   #   timeout             = 3
-#   #   interval            = 30
-#   #   target              = "HTTP:80/"
-#   # }
-
-#   listener {
-#     lb_port           = 80
-#     lb_protocol       = "http"
-#     instance_port     = "80"
-#     instance_protocol = "http"
-#   }
-
-# }
-
 resource "aws_lb" "p2piper_alb" {
   name               = "${local.name_prefix}-alb"
   load_balancer_type = "application"
@@ -254,12 +225,6 @@ resource "aws_lb" "p2piper_alb" {
 
   enable_cross_zone_load_balancing = true
 }
-
-# resource "aws_proxy_protocol_policy" "p2piper_ws" {
-#   load_balancer  = aws_elb.p2piper_elb.name
-#   instance_ports = ["80"]
-# }
-
 
 resource "aws_lb_listener" "p2piper_alb_listener" {
   load_balancer_arn = aws_lb.p2piper_alb.arn
@@ -311,14 +276,10 @@ resource "aws_autoscaling_group" "p2piper_autoscaling_group" {
   name = "${local.name_prefix}-asg"
 
   min_size         = 1
-  desired_capacity = 1
-  max_size         = 1
+  desired_capacity = 2
+  max_size         = 2
 
   health_check_type = "EC2"
-
-  # load_balancers = [
-  #   aws_lb.p2piper_alb.id
-  # ]
 
   launch_configuration = aws_launch_configuration.p2piper_lc.name
 
@@ -351,20 +312,6 @@ resource "aws_autoscaling_group" "p2piper_autoscaling_group" {
 resource "aws_route53_zone" "p2piper_route53_zone" {
   name = "p2piper.com"
 }
-
-# resource "aws_route53_record" "p2piper" {
-#   # zone_id = aws_route53_zone.p2piper_route53_zone.zone_id
-#   name = "p2piper.com"
-#   type = "CNAME"
-
-#   records = [
-#     aws_lb.p2piper_alb.dns_name,
-#   ]
-
-#   zone_id = aws_lb.p2piper_alb.zone_id
-#   ttl     = "60"
-
-# }
 
 resource "aws_subnet" "p2piper_redis_sunbet_a" {
   vpc_id            = aws_vpc.p2piper_vpc.id
