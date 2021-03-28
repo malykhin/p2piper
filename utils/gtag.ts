@@ -11,11 +11,9 @@ type GTagEvent = {
   value: number
 }
 
-const _window: any = window
-
 export const pageView = (url: URL) => {
   if (isProd) {
-    _window.gtag('config', GA_TRACKING_ID, {
+    ;(window as any).gtag('config', GA_TRACKING_ID, {
       page_path: url,
     })
   } else {
@@ -25,7 +23,7 @@ export const pageView = (url: URL) => {
 
 export const event = ({ action, category, label, value }: GTagEvent) => {
   if (isProd) {
-    _window.gtag('event', action, {
+    ;(window as any).gtag('event', action, {
       event_category: category,
       event_label: label,
       value: value,
