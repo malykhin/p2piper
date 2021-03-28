@@ -8,7 +8,7 @@ module.exports = {
         NODE_ENV: 'production',
         APP_ENV: 'production',
         BASE_URL: 'https://p2piper.com',
-        PORT: 443,
+        PORT: 80,
         ORIGIN: 'https://p2piper.com',
         REDIS_HOST: 'p2piper-prod-cluster-example.gxxc44.0001.use1.cache.amazonaws.com',
         REDIS_PORT: 6379,
