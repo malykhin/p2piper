@@ -6,7 +6,7 @@ import SignalingChannel from '../utils/SignallingChannel'
 import FileStorage from '../utils/FileStorage'
 import { useFCReducer } from './useFCReducer'
 import log from '../utils/logger'
-
+import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent } from '../utils/gtag'
 const MAX_CHUNK_SIZE = 10 * 1024
 
 const configuration: RTCConfiguration = {
@@ -46,6 +46,10 @@ export default function useWebRtc(basePath: string, sessionId: string) {
 
   const { filesCatalog, filesCatalogDispatch } = useFCReducer()
   const fileStorage = useRef(new FileStorage())
+
+  useEffect(() => {
+    pageView(new URL(window.location.href))
+  }, [])
 
   useEffect(() => {
     filesCatalog.forEach((f) => {
@@ -95,6 +99,9 @@ export default function useWebRtc(basePath: string, sessionId: string) {
       if (isDisconnected) {
         pc.close()
         toggleReload(!reload)
+      }
+      if (isConnected) {
+        peerConnectedEvent()
       }
     }
 
@@ -162,6 +169,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
         setTextValue(data.payload)
       }
       if (data.type === 'CREATE_FILE') {
+        receiveFileEvent()
         filesCatalogDispatch(data)
       }
       if (data.type === 'UPDATE_FILE') {
@@ -222,6 +230,8 @@ export default function useWebRtc(basePath: string, sessionId: string) {
     const file = e.target.files[0]
     const fileId = uuid()
     const { lastModified, lastModifiedDate, name, type } = file
+
+    uploadFileEvent(file.size)
 
     const nChunks = Math.ceil(file.size / MAX_CHUNK_SIZE)
 
