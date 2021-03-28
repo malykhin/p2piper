@@ -198,6 +198,13 @@ resource "aws_security_group" "p2piper_alb_http_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -226,6 +233,19 @@ resource "aws_lb" "p2piper_alb" {
   enable_cross_zone_load_balancing = true
 }
 
+resource "aws_lb_listener" "p2piper_alb_listener_https" {
+  load_balancer_arn = aws_lb.p2piper_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:us-east-1:438280439534:certificate/bfe0c156-a9e3-4a31-84e8-520abedeae5c"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.p2piper_alb_tg.arn
+  }
+}
+
 resource "aws_lb_listener" "p2piper_alb_listener" {
   load_balancer_arn = aws_lb.p2piper_alb.arn
 
@@ -233,8 +253,13 @@ resource "aws_lb_listener" "p2piper_alb_listener" {
   protocol = "HTTP"
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.p2piper_alb_tg.arn
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
 
@@ -282,6 +307,8 @@ resource "aws_autoscaling_group" "p2piper_autoscaling_group" {
   health_check_type = "EC2"
 
   launch_configuration = aws_launch_configuration.p2piper_lc.name
+
+  target_group_arns = [aws_lb_target_group.p2piper_alb_tg.arn]
 
   enabled_metrics = [
     "GroupMinSize",
