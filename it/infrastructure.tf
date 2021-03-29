@@ -1,5 +1,10 @@
 locals {
-  name_prefix = "p2piper-prod"
+  name_prefix        = "p2piper-prod"
+  region             = "us-east-1"
+  az_a               = "us-east-1a"
+  az_b               = "us-east-1b"
+  ssl_cerificate_arn = "arn:aws:acm:us-east-1:438280439534:certificate/bfe0c156-a9e3-4a31-84e8-520abedeae5c"
+
 }
 
 terraform {
@@ -12,7 +17,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "us-east-1"
+  region  = local.region
   profile = "default"
 }
 
@@ -45,20 +50,20 @@ resource "aws_vpc" "p2piper_vpc" {
 resource "aws_subnet" "p2piper_public_us_east_1a" {
   vpc_id            = aws_vpc.p2piper_vpc.id
   cidr_block        = "10.0.0.0/24"
-  availability_zone = "us-east-1a"
+  availability_zone = local.az_a
 
   tags = {
-    Name = "${local.name_prefix}_us-east-1a"
+    Name = "${local.name_prefix}_${local.az_a}"
   }
 }
 
 resource "aws_subnet" "p2piper_public_us_east_1b" {
   vpc_id            = aws_vpc.p2piper_vpc.id
   cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-east-1b"
+  availability_zone = local.az_b
 
   tags = {
-    Name = "${local.name_prefix}_us-east-1b"
+    Name = "${local.name_prefix}_${local.az_b}"
   }
 }
 
@@ -238,7 +243,7 @@ resource "aws_lb_listener" "p2piper_alb_listener_https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:us-east-1:438280439534:certificate/bfe0c156-a9e3-4a31-84e8-520abedeae5c"
+  certificate_arn   = local.ssl_cerificate_arn
 
   default_action {
     type             = "forward"
@@ -343,8 +348,7 @@ resource "aws_route53_zone" "p2piper_route53_zone" {
 resource "aws_subnet" "p2piper_redis_sunbet_a" {
   vpc_id            = aws_vpc.p2piper_vpc.id
   cidr_block        = "10.0.2.0/24"
-  availability_zone = "us-east-1a"
-
+  availability_zone = local.az_a
   tags = {
     Name = "${local.name_prefix}-redis-subnet-a"
   }
@@ -353,7 +357,7 @@ resource "aws_subnet" "p2piper_redis_sunbet_a" {
 resource "aws_subnet" "p2piper_redis_sunbet_b" {
   vpc_id            = aws_vpc.p2piper_vpc.id
   cidr_block        = "10.0.3.0/24"
-  availability_zone = "us-east-1b"
+  availability_zone = local.az_b
 
   tags = {
     Name = "${local.name_prefix}-redis-subnet-b"
