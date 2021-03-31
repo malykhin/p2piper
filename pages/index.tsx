@@ -5,7 +5,7 @@ import Error from '../components/Error'
 import TextBox from '../components/TextBox'
 import GitHubLogo from '../components/GitHubLogo'
 import FileManager from '../components/FileManager'
-
+import UploadsCatalog from '../components/UploadsCatalog'
 import useWebRtc from '../hooks/useWebRtc'
 import { getSessionId } from '../utils/token'
 
@@ -25,11 +25,13 @@ export default function Home({ sessionId, baseUrl }) {
     textValue,
     filesCatalog,
     download,
+    uploads,
   } = useWebRtc(baseUrl, sessionId)
 
   const isInviteVisible = !isSecondary && !isPeerConnected
   const isTextBoxVisible = isPeerConnected || !!textValue
   const isFileManagerVisible = isPeerConnected || !!filesCatalog.length
+  const isUploadsVisible = !!uploads.length
 
   return (
     <div className={styles.container}>
@@ -51,6 +53,7 @@ export default function Home({ sessionId, baseUrl }) {
             download={download}
           />
         )}
+        {isUploadsVisible && <UploadsCatalog data={uploads} />}
       </main>
       <footer className={styles.footer}>
         <a href="https://github.com/malykhin/p2piper" target="_blank" rel="noreferrer">

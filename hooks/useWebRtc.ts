@@ -5,6 +5,8 @@ import { saveAs } from 'file-saver'
 import SignalingChannel from '../utils/SignallingChannel'
 import FileStorage from '../utils/FileStorage'
 import { useFCReducer } from './useFCReducer'
+import { useFileUploadReducer } from './useFileUploadReducer'
+
 import log from '../utils/logger'
 import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent } from '../utils/gtag'
 const MAX_CHUNK_SIZE = 10 * 1024
@@ -45,6 +47,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
   const [textValue, setTextValue] = useState<string>('')
 
   const { filesCatalog, filesCatalogDispatch } = useFCReducer()
+  const { uploads, uploadsDispatch } = useFileUploadReducer()
   const fileStorage = useRef(new FileStorage())
 
   useEffect(() => {
@@ -242,7 +245,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
       payload: { id: fileId, nChunks, lastModified, lastModifiedDate, name, type },
     }
     sendMessage(JSON.stringify(data))
-
+    uploadsDispatch({ type: 'CREATE_UPLOAD', payload: { id: fileId, name, nChunks, processed: 0 } })
     const readEventHandler = (i) => (e) => {
       if (e.target.error == null) {
         offset += e.target.result.byteLength
@@ -260,6 +263,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
         }
         if (e.target.result.byteLength) {
           sendMessage(JSON.stringify(data))
+          uploadsDispatch({ type: 'UPDATE_UPLOAD', payload: { id: fileId } })
           chunkReaderBlock(offset, MAX_CHUNK_SIZE, file, i + 1)
         }
       }
@@ -302,5 +306,6 @@ export default function useWebRtc(basePath: string, sessionId: string) {
     handleFileCreate,
     filesCatalog,
     download,
+    uploads,
   }
 }
