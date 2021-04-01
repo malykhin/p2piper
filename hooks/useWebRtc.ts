@@ -11,6 +11,16 @@ import log from '../utils/logger'
 import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent } from '../utils/gtag'
 const MAX_CHUNK_SIZE = 10 * 1024
 
+const configuration: RTCConfiguration = {
+  iceServers: [
+    {
+      urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
+      credential: 'webrtc',
+      username: 'webrtc',
+    },
+  ],
+}
+
 export default function useWebRtc(basePath: string, sessionId: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
 
@@ -70,7 +80,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
       },
     )
 
-    const pc = new RTCPeerConnection()
+    const pc = new RTCPeerConnection(configuration)
 
     pc.onicecandidate = ({ candidate }) => {
       log('onicecandidate', candidate)
