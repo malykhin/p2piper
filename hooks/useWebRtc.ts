@@ -11,20 +11,6 @@ import log from '../utils/logger'
 import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent } from '../utils/gtag'
 const MAX_CHUNK_SIZE = 10 * 1024
 
-const configuration: RTCConfiguration = {
-  iceServers: [
-    {
-      urls: [
-        'stun:stun.l.google.com:19302',
-        'stun:stun1.l.google.com:19302',
-        'stun:stun2.l.google.com:19302',
-        'stun:stun3.l.google.com:19302',
-        'stun:stun4.l.google.com:19302',
-      ],
-    },
-  ],
-}
-
 export default function useWebRtc(basePath: string, sessionId: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
 
@@ -84,7 +70,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
       },
     )
 
-    const pc = new RTCPeerConnection(configuration)
+    const pc = new RTCPeerConnection()
 
     pc.onicecandidate = ({ candidate }) => {
       log('onicecandidate', candidate)
