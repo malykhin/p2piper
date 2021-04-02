@@ -14,9 +14,9 @@ const MAX_CHUNK_SIZE = 10 * 1024
 
 const configuration: RTCConfiguration = {
   iceServers: [
-    {
-      urls: ['stun:stun.l.google.com:19302'],
-    },
+    // {
+    //   urls: ['stun:stun.l.google.com:19302'],
+    // },
     {
       urls: 'turn:numb.viagenie.ca',
       credential: 'muazkh',
