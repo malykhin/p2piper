@@ -1,11 +1,5 @@
 import log from './logger'
 
-export const GA_TRACKING_ID = process.env.GA_TRACKING_ID
-
-const isProd = process.env.APP_ENV === 'production'
-
-log('env', process.env)
-
 type GTagEvent = {
   action: string
   category: string
@@ -13,8 +7,14 @@ type GTagEvent = {
   value: number
 }
 
+let GA_TRACKING_ID = ''
+
+export const setTrackingId = (trackingId: string) => {
+  GA_TRACKING_ID = trackingId
+}
+
 export const pageView = (url: URL) => {
-  if (isProd) {
+  if (GA_TRACKING_ID) {
     ;(window as any).gtag('config', GA_TRACKING_ID, {
       page_path: url,
     })
@@ -24,7 +24,7 @@ export const pageView = (url: URL) => {
 }
 
 export const event = ({ action, category, label, value }: GTagEvent) => {
-  if (isProd) {
+  if (GA_TRACKING_ID) {
     ;(window as any).gtag('event', action, {
       event_category: category,
       event_label: label,

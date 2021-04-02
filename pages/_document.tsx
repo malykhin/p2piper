@@ -1,6 +1,6 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 
-import { GA_TRACKING_ID } from '../utils/gtag'
+const GA_TRACKING_ID = process.env.GA_TRACKING_ID
 
 class ProperDocument extends Document {
   static async getInitialProps(ctx) {

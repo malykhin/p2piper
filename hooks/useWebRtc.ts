@@ -8,7 +8,7 @@ import { useFCReducer } from './useFCReducer'
 import { useFileUploadReducer } from './useFileUploadReducer'
 
 import log from '../utils/logger'
-import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent } from '../utils/gtag'
+import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent, setTrackingId } from '../utils/gtag'
 
 const MAX_CHUNK_SIZE = 10 * 1024
 
@@ -20,7 +20,7 @@ const configuration: RTCConfiguration = {
   ],
 }
 
-export default function useWebRtc(basePath: string, sessionId: string) {
+export default function useWebRtc(basePath: string, sessionId: string, gaTrackingId: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
 
   const [reload, toggleReload] = useState<boolean>(false)
@@ -44,6 +44,7 @@ export default function useWebRtc(basePath: string, sessionId: string) {
   const fileStorage = useRef(new FileStorage())
 
   useEffect(() => {
+    setTrackingId(gaTrackingId)
     pageView(new URL(window.location.href))
   }, [])
 
