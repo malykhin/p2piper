@@ -179,7 +179,8 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
     dc.onerror = (error) => log('dc_error', error)
 
     dataChannel.current = dc
-  }, [basePath, reload])
+    // }, [basePath, reload])
+  }, [])
 
   const sendMessage = async (message: any) => {
     const sendChannel = dataChannel?.current
