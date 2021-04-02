@@ -141,7 +141,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
           })
         }
       } catch (error) {
-        log(error)
+        log('candidate', error)
         setError(error)
       }
     })
@@ -166,7 +166,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
       receiveChannel.onmessage = (e: MessageEvent) => handleDownStreamMessage(e.data)
       receiveChannel.onopen = () => setIsDownstreamConnected(true)
       receiveChannel.onclose = () => setIsDownstreamConnected(false)
-      receiveChannel.onerror = log
+      receiveChannel.onerror = (error) => log('rc_error', error)
     }
 
     const dc = pc.createDataChannel('data', {
@@ -176,7 +176,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
 
     dc.onclose = () => setIsUpstreamConnected(false)
     dc.onopen = () => setIsUpstreamConnected(true)
-    dc.onerror = log
+    dc.onerror = (error) => log('dc_error', error)
 
     dataChannel.current = dc
   }, [basePath, reload])
