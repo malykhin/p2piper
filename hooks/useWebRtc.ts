@@ -134,7 +134,9 @@ export default function useWebRtc(basePath: string, sessionId: string) {
             signaling.send('answer', { description: pc.localDescription })
           }
         } else if (candidate) {
-          await pc.addIceCandidate(candidate)
+          await pc.addIceCandidate(candidate).catch((error) => {
+            log('pc.addIceCandidate', error)
+          })
         }
       } catch (error) {
         log(error)

@@ -4,6 +4,8 @@ export const GA_TRACKING_ID = process.env.GA_TRACKING_ID
 
 const isProd = process.env.APP_ENV === 'production'
 
+log('isProd', isProd)
+
 type GTagEvent = {
   action: string
   category: string
