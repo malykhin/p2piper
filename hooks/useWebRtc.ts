@@ -9,9 +9,16 @@ import { useFileUploadReducer } from './useFileUploadReducer'
 
 import log from '../utils/logger'
 import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent } from '../utils/gtag'
+
 const MAX_CHUNK_SIZE = 10 * 1024
 
-const configuration: RTCConfiguration = null
+const configuration: RTCConfiguration = {
+  iceServers: [
+    {
+      urls: ['stun:stun.l.google.com:19302'],
+    },
+  ],
+}
 
 export default function useWebRtc(basePath: string, sessionId: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
@@ -29,8 +36,6 @@ export default function useWebRtc(basePath: string, sessionId: string) {
 
   const dataChannel = useRef<RTCDataChannel>()
   const makingOffer = useRef<boolean>(false)
-  const ignoreOffer = useRef<boolean>(false)
-  const isSettingRemoteAnswerPending = useRef<boolean>(false)
   const debounceTimerId = useRef<NodeJS.Timeout>()
   const [textValue, setTextValue] = useState<string>('')
 
@@ -121,32 +126,20 @@ export default function useWebRtc(basePath: string, sessionId: string) {
           return
         }
         if (description) {
-          const isStable =
-            pc.signalingState === 'stable' ||
-            (pc.signalingState === 'have-local-offer' && isSettingRemoteAnswerPending.current)
+          const offerCollision = description.type == 'offer' && (makingOffer.current || pc.signalingState != 'stable')
 
-          const ignore = description.type === 'offer' && false && (makingOffer.current || !isStable)
-          ignoreOffer.current = ignore
-          if (ignore) {
-            return
+          if (offerCollision) {
+            await Promise.all([pc.setLocalDescription({ type: 'rollback' }), pc.setRemoteDescription(description)])
+          } else {
+            await pc.setRemoteDescription(description)
           }
-          isSettingRemoteAnswerPending.current = description.type === 'answer'
-          await pc.setRemoteDescription(description)
-          isSettingRemoteAnswerPending.current = false
           if (description.type === 'offer') {
             const answer = await pc.createAnswer()
             await pc.setLocalDescription(answer)
             signaling.send('answer', { description: pc.localDescription })
           }
         } else if (candidate) {
-          try {
-            await pc.addIceCandidate(candidate)
-          } catch (error) {
-            if (!ignoreOffer.current) {
-              log(error)
-              setError(error)
-            }
-          }
+          await pc.addIceCandidate(candidate)
         }
       } catch (error) {
         log(error)
