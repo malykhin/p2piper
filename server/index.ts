@@ -63,7 +63,7 @@ app.prepare().then(() => {
     if (token && isTokenExist) {
       const o = await offer.get(token).catch(errorLoggerCatcher)
       logger.info('offer_on_connection', o)
-      socket.emit('offer', o)
+      socket.emit('candidate', o)
       socket.join(token)
 
       socket.on('get_offer', async () => {

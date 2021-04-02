@@ -12,15 +12,15 @@ import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent, setTra
 
 const MAX_CHUNK_SIZE = 10 * 1024
 
-// const configuration: RTCConfiguration = {
-//   iceServers: [
-//     {
-//       urls: ['stun:stun.l.google.com:19302'],
-//     },
-//   ],
-// }
+const configuration: RTCConfiguration = {
+  iceServers: [
+    {
+      urls: ['stun:stun.l.google.com:19302'],
+    },
+  ],
+}
 
-const configuration: RTCConfiguration = null
+// const configuration: RTCConfiguration = null
 
 export default function useWebRtc(basePath: string, sessionId: string, gaTrackingId: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
@@ -105,10 +105,10 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
     }
 
     pc.onnegotiationneeded = async () => {
-      if (isSecondary) {
-        signaling.send('get_offer')
-        return
-      }
+      // if (isSecondary) {
+      //   signaling.send('get_offer')
+      //   return
+      // }
       try {
         makingOffer.current = true
         const offer = await pc.createOffer()
@@ -124,14 +124,13 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
     }
 
     signaling.addHandler('candidate', async ({ description, candidate }) => {
-      log('on_candidate', description?.sdp, candidate?.candidate)
+      log('on_candidate', description, candidate?.candidate)
       try {
         if (pc.signalingState === 'closed') {
           return
         }
         if (description) {
-          const remoteDesc = new RTCSessionDescription(description)
-          await pc.setRemoteDescription(remoteDesc)
+          await pc.setRemoteDescription(description)
           if (description.type === 'offer') {
             const answer = await pc.createAnswer()
             await pc.setLocalDescription(answer)
