@@ -66,11 +66,11 @@ app.prepare().then(() => {
       socket.emit('candidate', o)
       socket.join(token)
 
-      socket.on('get_offer', async () => {
-        logger.info(`get_offer_${sessionId}_${token}`)
-        const o = await offer.get(token).catch(errorLoggerCatcher)
-        socket.emit('candidate', o)
-      })
+      // socket.on('get_offer', async () => {
+      //   logger.info(`get_offer_${sessionId}_${token}`)
+      //   const o = await offer.get(token).catch(errorLoggerCatcher)
+      //   socket.emit('candidate', o)
+      // })
 
       socket.on('answer', (answer) => {
         logger.info(`answer_${sessionId}_${token}`)

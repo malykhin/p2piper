@@ -105,10 +105,9 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
     }
 
     pc.onnegotiationneeded = async () => {
-      // if (isSecondary) {
-      //   signaling.send('get_offer')
-      //   return
-      // }
+      if (isSecondary) {
+        return
+      }
       try {
         makingOffer.current = true
         const offer = await pc.createOffer()
