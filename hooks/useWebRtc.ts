@@ -121,18 +121,13 @@ export default function useWebRtc(basePath: string, sessionId: string) {
     }
 
     signaling.addHandler('candidate', async ({ description, candidate }) => {
+      log('on_candidate', description, candidate)
       try {
         if (pc.signalingState === 'closed') {
           return
         }
         if (description) {
-          const offerCollision = description.type == 'offer' && (makingOffer.current || pc.signalingState != 'stable')
-
-          if (offerCollision) {
-            await Promise.all([pc.setLocalDescription({ type: 'rollback' }), pc.setRemoteDescription(description)])
-          } else {
-            await pc.setRemoteDescription(description)
-          }
+          await pc.setRemoteDescription(description)
           if (description.type === 'offer') {
             const answer = await pc.createAnswer()
             await pc.setLocalDescription(answer)
