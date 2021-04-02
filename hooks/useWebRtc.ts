@@ -90,6 +90,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
     }
 
     pc.onconnectionstatechange = () => {
+      log('pc.onconnectionstatechange', pc.iceConnectionState)
       const isConnected = pc.iceConnectionState === 'connected'
       const isDisconnected = pc.iceConnectionState === 'disconnected'
       setIsPeerConnected(isConnected)
