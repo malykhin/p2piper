@@ -12,20 +12,15 @@ import { pageView, peerConnectedEvent, receiveFileEvent, uploadFileEvent, setTra
 
 const MAX_CHUNK_SIZE = 10 * 1024
 
-const configuration: RTCConfiguration = {
-  iceServers: [
-    // {
-    //   urls: ['stun:stun.l.google.com:19302'],
-    // },
-    {
-      urls: 'turn:numb.viagenie.ca',
-      credential: 'muazkh',
-      username: 'webrtc@live.com',
-    },
-  ],
-}
+// const configuration: RTCConfiguration = {
+//   iceServers: [
+//     {
+//       urls: ['stun:stun.l.google.com:19302'],
+//     },
+//   ],
+// }
 
-// const configuration: RTCConfiguration = null
+const configuration: RTCConfiguration = null
 
 export default function useWebRtc(basePath: string, sessionId: string, gaTrackingId: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
