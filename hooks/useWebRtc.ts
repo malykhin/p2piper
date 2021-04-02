@@ -128,7 +128,8 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
           return
         }
         if (description) {
-          await pc.setRemoteDescription(description)
+          const remoteDesc = new RTCSessionDescription(description)
+          await pc.setRemoteDescription(remoteDesc)
           if (description.type === 'offer') {
             const answer = await pc.createAnswer()
             await pc.setLocalDescription(answer)
