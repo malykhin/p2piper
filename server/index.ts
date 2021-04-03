@@ -93,7 +93,7 @@ app.prepare().then(() => {
 
       socket.on('candidate', (candidate) => {
         logger.info(`candidate_wo_token_${sessionId}`)
-        socket.to(token).emit('candidate', candidate)
+        socket.to(sessionId).emit('candidate', candidate)
       })
     }
   })

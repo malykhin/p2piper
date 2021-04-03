@@ -20,8 +20,6 @@ const configuration: RTCConfiguration = {
   ],
 }
 
-// const configuration: RTCConfiguration = null
-
 export default function useWebRtc(basePath: string, sessionId: string, gaTrackingId: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
 
@@ -142,7 +140,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
           })
         }
       } catch (error) {
-        log('candidate', error)
+        log('candidate_error', error)
         setError(error)
       }
     })
