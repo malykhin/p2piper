@@ -23,7 +23,6 @@ const configuration: RTCConfiguration = {
 export default function useWebRtc(basePath: string, sessionId: string, gaTrackingId: string, token: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
 
-  const [reload, toggleReload] = useState<boolean>(false)
   const [latch, setLatch] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isPeerConnected, setIsPeerConnected] = useState<boolean>(false)
@@ -61,6 +60,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
       },
     )
     signalingRef.current.addHandler('session', () => {
+      console.log('session')
       setLatch(true)
     })
   }, [])
@@ -107,7 +107,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
 
       if (isDisconnected) {
         pc.close()
-        toggleReload(!reload)
+        setLatch(false)
       }
       if (isConnected) {
         peerConnectedEvent()
@@ -192,7 +192,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
     dc.onerror = (error) => log('dc_error', error)
 
     dataChannel.current = dc
-  }, [basePath, reload, latch])
+  }, [basePath, latch])
 
   const sendMessage = async (message: any) => {
     const sendChannel = dataChannel?.current

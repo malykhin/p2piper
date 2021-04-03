@@ -15,7 +15,6 @@ const BASE_URL = process.env.BASE_URL
 const GA_TRACKING_ID = process.env.GA_TRACKING_ID
 
 export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
-  console.log(token)
   const {
     urlToJoin,
     isSecondary,
@@ -67,7 +66,6 @@ export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
 }
 
 export async function getServerSideProps(context) {
-  console.log('getServerSideProps', context)
   return {
     props: {
       sessionId: await getSessionId(),
