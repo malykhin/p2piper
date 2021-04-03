@@ -14,7 +14,8 @@ import styles from '../styles/Home.module.scss'
 const BASE_URL = process.env.BASE_URL
 const GA_TRACKING_ID = process.env.GA_TRACKING_ID
 
-export default function Home({ sessionId, baseUrl, gaTrackingId }) {
+export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
+  console.log(token)
   const {
     urlToJoin,
     isSecondary,
@@ -27,7 +28,7 @@ export default function Home({ sessionId, baseUrl, gaTrackingId }) {
     filesCatalog,
     download,
     uploads,
-  } = useWebRtc(baseUrl, sessionId, gaTrackingId)
+  } = useWebRtc(baseUrl, sessionId, gaTrackingId, token)
 
   const isInviteVisible = !isSecondary && !isPeerConnected
   const isTextBoxVisible = isPeerConnected || !!textValue
@@ -65,12 +66,14 @@ export default function Home({ sessionId, baseUrl, gaTrackingId }) {
   )
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  console.log('getServerSideProps', context)
   return {
     props: {
       sessionId: await getSessionId(),
       baseUrl: BASE_URL,
       gaTrackingId: GA_TRACKING_ID,
+      token: (context?.resolvedUrl ?? '').replace('/', '').replace('?t=', ''),
     },
   }
 }

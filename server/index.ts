@@ -60,11 +60,12 @@ app.prepare().then(() => {
     const isTokenExist = await offer.has(token).catch(errorLoggerCatcher)
     logger.info(`isTokenExist_${sessionId}_${token}_${isTokenExist}`)
 
-    if (token && isTokenExist) {
-      const o = await offer.get(token).catch(errorLoggerCatcher)
-      logger.info('offer_on_connection', o)
-      socket.emit('candidate', o)
+    if (token) {
+      // const o = await offer.get(token).catch(errorLoggerCatcher)
+      // logger.info('offer_on_connection', o)
+      // socket.emit('candidate', o)
       socket.join(token)
+      socket.to(token).emit('session')
 
       socket.on('answer', (answer) => {
         logger.info(`answer_${sessionId}_${token}`)
@@ -81,9 +82,10 @@ app.prepare().then(() => {
 
       socket.join(sessionId)
 
-      socket.on('set_offer', (o) => {
-        logger.info(`set_offer_${sessionId}`)
-        offer.set(sessionId, o)
+      socket.on('offer', (o) => {
+        logger.info(`offer${sessionId}`)
+        // offer.set(sessionId, o)
+        socket.to(sessionId).emit('candidate', o)
       })
 
       socket.on('candidate', (candidate) => {

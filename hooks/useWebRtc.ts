@@ -20,10 +20,11 @@ const configuration: RTCConfiguration = {
   ],
 }
 
-export default function useWebRtc(basePath: string, sessionId: string, gaTrackingId: string) {
+export default function useWebRtc(basePath: string, sessionId: string, gaTrackingId: string, token: string) {
   const [isSecondary, setIsSecondary] = useState<boolean>(true)
 
   const [reload, toggleReload] = useState<boolean>(false)
+  const [latch, setLatch] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isPeerConnected, setIsPeerConnected] = useState<boolean>(false)
   const [isPeerDisconnected, setIsPeerDisconnected] = useState<boolean>(false)
@@ -35,6 +36,8 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
   const [error, setError] = useState<Error | null>(null)
 
   const dataChannel = useRef<RTCDataChannel>()
+  const signalingRef = useRef<SignalingChannel>()
+
   const makingOffer = useRef<boolean>(false)
   const debounceTimerId = useRef<NodeJS.Timeout>()
   const [textValue, setTextValue] = useState<string>('')
@@ -42,6 +45,25 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
   const { filesCatalog, filesCatalogDispatch } = useFCReducer()
   const { uploads, uploadsDispatch } = useFileUploadReducer()
   const fileStorage = useRef(new FileStorage())
+
+  useEffect(() => {
+    signalingRef.current = new SignalingChannel(
+      basePath,
+      sessionId,
+      token,
+      () => {
+        log('connected', sessionId, token)
+        setIsAPIConnected(true)
+      },
+      () => {
+        log('disconnected', sessionId, token)
+        setIsAPIConnected(false)
+      },
+    )
+    signalingRef.current.addHandler('session', () => {
+      setLatch(true)
+    })
+  }, [])
 
   useEffect(() => {
     setTrackingId(gaTrackingId)
@@ -58,25 +80,14 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
   }, [filesCatalog])
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search)
-    const token = searchParams.get('t')
     const isSecondary = !!token
-
     setIsSecondary(isSecondary)
 
-    const signaling = new SignalingChannel(
-      basePath,
-      sessionId,
-      token,
-      () => {
-        log('connected', sessionId, token)
-        setIsAPIConnected(true)
-      },
-      () => {
-        log('disconnected', sessionId, token)
-        setIsAPIConnected(false)
-      },
-    )
+    if (!isSecondary && !latch) {
+      return
+    }
+
+    const signaling = signalingRef.current
 
     const pc = new RTCPeerConnection(configuration)
 
@@ -111,7 +122,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
         makingOffer.current = true
         const offer = await pc.createOffer()
         await pc.setLocalDescription(offer)
-        signaling.send('set_offer', { description: pc.localDescription })
+        signaling.send('offer', { description: pc.localDescription })
       } catch (error) {
         log(error)
         setError(error)
@@ -181,7 +192,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
     dc.onerror = (error) => log('dc_error', error)
 
     dataChannel.current = dc
-  }, [basePath, reload])
+  }, [basePath, reload, latch])
 
   const sendMessage = async (message: any) => {
     const sendChannel = dataChannel?.current
