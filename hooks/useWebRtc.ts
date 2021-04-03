@@ -122,7 +122,7 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
     }
 
     signaling.addHandler('candidate', async ({ description, candidate }) => {
-      log('on_candidate', description, candidate?.candidate)
+      log('on_candidate', description?.senderId, candidate?.senderId)
       try {
         if (pc.signalingState === 'closed') {
           return
