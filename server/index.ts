@@ -5,8 +5,6 @@ import { createAdapter } from 'socket.io-redis'
 import { RedisClient, ClientOpts } from 'redis'
 import { Server, Socket } from 'socket.io'
 
-import Offer from './OfferRepository'
-
 import config from './config'
 import logger from './logger'
 
@@ -14,11 +12,6 @@ const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
-
-const errorLoggerCatcher = (error) => {
-  logger.info('error', error)
-  throw error
-}
 
 app.prepare().then(() => {
   const httpServer = createServer((req, res) => {
@@ -34,8 +27,6 @@ app.prepare().then(() => {
       credentials: true,
     },
   })
-
-  const offer = new Offer(config.redisHost, config.redisPort, config.useTLS)
 
   const redisOptions: ClientOpts = {
     host: config.redisHost,
@@ -57,8 +48,6 @@ app.prepare().then(() => {
     const token = socket.handshake.auth.token
 
     logger.info(`connection_${sessionId}_${token}`)
-    const isTokenExist = await offer.has(token).catch(errorLoggerCatcher)
-    logger.info(`isTokenExist_${sessionId}_${token}_${isTokenExist}`)
 
     if (token) {
       socket.join(token)
