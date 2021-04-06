@@ -1,4 +1,7 @@
 import { useRef } from 'react'
+
+import SheetsLogo from './SheetsLogo'
+
 import styles from '../styles/FileInput.module.scss'
 
 interface IFileInput {
@@ -15,9 +18,32 @@ function FileInput({ handleChange, disabled }: IFileInput) {
     }
   }
 
+  const preventTabOpen = (e) => {
+    e.preventDefault()
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    handleChange({
+      ...e,
+      target: {
+        ...e.target,
+        files: e.dataTransfer.files,
+      },
+    })
+  }
+
   return (
-    <label className={[styles.label, disabled && styles.disabled].join(' ')}>
-      Load file
+    <label
+      onDragOver={preventTabOpen}
+      onDrop={handleDrop}
+      className={[styles.label, disabled && styles.disabled].join(' ')}
+    >
+      <SheetsLogo />
+      <h3>Upload your document</h3>
+      <h4>
+        Drag &amp; drop or <span>browse</span> your file here
+      </h4>
       <input
         disabled={disabled}
         ref={inputRef}

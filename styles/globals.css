@@ -1,9 +1,38 @@
+@font-face {
+  font-family: SF Pro Display;
+  src: url(../public/FontsFree-Net-SFProDisplay-Regular.ttf);
+}
+
+@font-face {
+  font-family: SF Pro Display Bold;
+  src: url(../public/FontsFree-Net-SFProDisplay-Bold.ttf);
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-    Helvetica Neue, sans-serif;
+  font-family: SF Pro Display, sans-serif;
+  color: #fff;
+  background: radial-gradient(
+    100% 100% at 90% 80%,
+    #62e6ab 0%,
+    #62e5ab 6.67%,
+    #60e3aa 13.33%,
+    #5ee0a8 20%,
+    #5cdba6 26.67%,
+    #58d4a3 33.33%,
+    #53cda0 40%,
+    #4fc49c 46.67%,
+    #49bc98 53.33%,
+    #45b394 60%,
+    #40ac91 66.67%,
+    #3ca58e 73.33%,
+    #3aa08c 80%,
+    #389d8a 86.67%,
+    #369b89 93.33%,
+    #369a89 100%
+  );
 }
 
 a {

@@ -3,15 +3,22 @@ import styles from '../styles/TextBox.module.scss'
 interface ITexBox {
   value: string
   disabled: boolean
+  isVisible: boolean
   handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
 }
 
-function TexBox({ disabled, value, handleChange }: ITexBox) {
+function TexBox({ isVisible, disabled, value, handleChange }: ITexBox) {
+  if (!isVisible) {
+    return null
+  }
   return (
-    <label className={styles.label}>
-      Enter the text:
-      <textarea className={styles.textarea} disabled={disabled} value={value} onChange={handleChange} />
-    </label>
+    <textarea
+      className={styles.textarea}
+      disabled={disabled}
+      value={value}
+      onChange={handleChange}
+      placeholder="Write your message here..."
+    />
   )
 }
 

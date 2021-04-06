@@ -10,20 +10,53 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.card {
+  background: #fdfefe;
+  box-shadow: 0px 12px 44px -12px rgba(23, 97, 83, 0.8);
+  border-radius: 20px;
+  padding: 32px;
+  width: 628px;
+}
+
+.cardHeading {
+  color: rgba(16, 20, 38, 1);
+  font-size: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 24px;
+
+  svg {
+    margin-right: 12px;
+  }
 }
 
 .footer {
   width: 100%;
-  height: 40px;
-  border-top: 1px solid lightgrey;
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding-bottom: 32px;
 }
 
-@media (max-width: 600px) {
-  .main {
-    width: 100%;
-    flex-direction: column;
+.internal {
+  background: rgba(246, 250, 249, 1);
+  border-radius: 4px;
+  padding: 32px;
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 60%;
+  }
+}
+
+@media (max-width: 375px) {
+  .card {
+    width: 90%;
   }
 }

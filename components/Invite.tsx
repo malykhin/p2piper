@@ -11,7 +11,12 @@ function Invite({ url }: IInvite) {
 
   useLayoutEffect(() => {
     if (ref.current) {
-      QRCode.toCanvas(ref.current, url ?? '')
+      QRCode.toCanvas(ref.current, url ?? '', {
+        color: {
+          dark: '#FFF',
+          light: '#0000',
+        },
+      })
     }
   }, [url])
 

@@ -7,17 +7,27 @@
 
 .label {
   display: flex;
-  height: 28px;
-  width: 120px;
-  border: 1px solid lightgrey;
-  border-radius: 4px;
-  cursor: pointer;
+  color: rgba(143, 155, 179, 1);
   text-align: center;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  &:hover {
-    border: 1px solid grey;
+  cursor: pointer;
+
+  h3 {
+    margin-bottom: 0;
+    font-size: 16px;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 12px;
+    span {
+      color: #0400ff;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }
 

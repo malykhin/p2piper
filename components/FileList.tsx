@@ -1,3 +1,5 @@
+import styles from '../styles/FileList.module.scss'
+
 function FileList({ filesCatalog, download }) {
   return (
     <table>

@@ -1,4 +1,5 @@
 import Head from 'next/head'
+
 import Invite from '../components/Invite'
 import Loader from '../components/Loader'
 import Error from '../components/Error'
@@ -6,6 +7,8 @@ import TextBox from '../components/TextBox'
 import GitHubLogo from '../components/GitHubLogo'
 import FileManager from '../components/FileManager'
 import UploadsCatalog from '../components/UploadsCatalog'
+import AttachmentLogo from '../components/AttachmentLogo'
+
 import useWebRtc from '../hooks/useWebRtc'
 import { getSessionId } from '../utils/token'
 
@@ -33,7 +36,7 @@ export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
   const isTextBoxVisible = isPeerConnected || !!textValue
   const isFileManagerVisible = isPeerConnected || !!filesCatalog.length
   const isUploadsVisible = !!uploads.length
-
+  const isCardVisible = isFileManagerVisible || isTextBoxVisible || isUploadsVisible
   return (
     <div className={styles.container}>
       <Head>
@@ -45,16 +48,31 @@ export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
         {error && <Error />}
         {isLoading && <Loader />}
         {isInviteVisible && <Invite url={urlToJoin} />}
-        {isTextBoxVisible && <TextBox disabled={!isPeerConnected} value={textValue} handleChange={handleTextChange} />}
-        {isFileManagerVisible && (
-          <FileManager
-            disabled={!isPeerConnected}
-            handleFileCreate={handleFileCreate}
-            filesCatalog={filesCatalog}
-            download={download}
-          />
+
+        {isCardVisible && (
+          <div className={styles.card}>
+            <div className={styles.cardHeading}>
+              <AttachmentLogo />
+              Upload the attachment
+            </div>
+            <div className={styles.internal}>
+              <FileManager
+                isVisible={isFileManagerVisible}
+                disabled={!isPeerConnected}
+                handleFileCreate={handleFileCreate}
+                filesCatalog={filesCatalog}
+                download={download}
+              />
+              <UploadsCatalog isVisible={isUploadsVisible} data={uploads} />
+              <TextBox
+                isVisible={isTextBoxVisible}
+                disabled={!isPeerConnected}
+                value={textValue}
+                handleChange={handleTextChange}
+              />
+            </div>
+          </div>
         )}
-        {isUploadsVisible && <UploadsCatalog data={uploads} />}
       </main>
       <footer className={styles.footer}>
         <a href="https://github.com/malykhin/p2piper" target="_blank" rel="noreferrer">
