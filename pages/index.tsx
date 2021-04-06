@@ -22,8 +22,6 @@ export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
     urlToJoin,
     isSecondary,
     isPeerConnected,
-    isLoading,
-    error,
     handleTextChange,
     handleFileCreate,
     textValue,
@@ -45,8 +43,6 @@ export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
         <meta name="Description" content="Application for sending files between browsers. Desktop and mobile."></meta>
       </Head>
       <main className={styles.main}>
-        {error && <Error />}
-        {isLoading && <Loader />}
         {isInviteVisible && <Invite url={urlToJoin} />}
 
         {isCardVisible && (
