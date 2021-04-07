@@ -1,0 +1,36 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(16, 20, 38, 1);
+  margin-bottom: 8px;
+}
+
+.progressWrapper {
+  height: 8px;
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.progressBackground {
+  background: rgba(228, 236, 234, 1);
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.progressBar {
+  background: rgb(63, 169, 144);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.details {
+  color: rgba(143, 155, 179, 1);
+  font-size: 12px;
+}

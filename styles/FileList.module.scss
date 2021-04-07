@@ -1,3 +1,34 @@
-.cell {
+.item {
+  border-radius: 4px;
+  background: rgba(246, 250, 249, 1);
+  width: 100%;
+  padding: 12px 24px;
+  margin-bottom: 8px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   color: rgba(16, 20, 38, 1);
+  margin-bottom: 8px;
+}
+
+.fileName {
+  font-family: SF Pro Display Bold, sans-serif;
+  font-size: 14px;
+}
+
+.download {
+  background: rgba(63, 169, 144, 1);
+  height: 32px;
+  border-radius: 20px;
+  border-color: rgba(63, 169, 144, 1);
+  color: #fff;
+  cursor: pointer;
+  border-style: solid;
+  &:hover {
+    opacity: 0.9;
+  }
 }

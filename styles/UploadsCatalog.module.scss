@@ -1,3 +1,21 @@
-.cell {
+.item {
+  border-radius: 4px;
+  background: rgba(246, 250, 249, 1);
+  width: 100%;
+  padding: 12px 24px;
+  margin-bottom: 8px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   color: rgba(16, 20, 38, 1);
+  margin-bottom: 8px;
+}
+
+.fileName {
+  font-family: SF Pro Display Bold, sans-serif;
+  font-size: 14px;
 }

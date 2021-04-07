@@ -1,23 +1,27 @@
+import Progress from './Progress'
 import styles from '../styles/FileList.module.scss'
 
 function FileList({ filesCatalog, download }) {
   return (
-    <table>
-      <tbody>
-        {filesCatalog.map((f) => (
-          <tr key={f.id}>
-            <td>
-              <button disabled={f.nChunksReceived < f.nChunks} onClick={() => download(f)}>
-                {f.name}
-              </button>
-            </td>
-            <td>
-              <progress value={f.nChunksReceived} max={f.nChunks} />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      {filesCatalog.map((f) => {
+        const isCompleted = f.nChunksReceived === f.nChunks
+        const _download = () => download(f)
+        return (
+          <div key={f.id} className={styles.item}>
+            <div className={styles.row}>
+              <span className={styles.fileName}>{f.name}</span>
+              {isCompleted && (
+                <button className={styles.download} disabled={!isCompleted} onClick={_download}>
+                  Download
+                </button>
+              )}
+            </div>
+            {!isCompleted && <Progress current={f.nChunksReceived} total={f.nChunks} />}
+          </div>
+        )
+      })}
+    </>
   )
 }
 

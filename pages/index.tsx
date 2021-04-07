@@ -1,8 +1,7 @@
 import Head from 'next/head'
 
 import Invite from '../components/Invite'
-import Loader from '../components/Loader'
-import Error from '../components/Error'
+import FileList from '../components/FileList'
 import TextBox from '../components/TextBox'
 import GitHubLogo from '../components/GitHubLogo'
 import FileManager from '../components/FileManager'
@@ -46,28 +45,29 @@ export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
         {isInviteVisible && <Invite url={urlToJoin} />}
 
         {isCardVisible && (
-          <div className={styles.card}>
-            <div className={styles.cardHeading}>
-              <AttachmentLogo />
-              Upload the attachment
-            </div>
-            <div className={styles.internal}>
-              <FileManager
-                isVisible={isFileManagerVisible}
-                disabled={!isPeerConnected}
-                handleFileCreate={handleFileCreate}
-                filesCatalog={filesCatalog}
-                download={download}
-              />
+          <>
+            <div className={styles.card}>
+              <div className={styles.cardHeading}>
+                <AttachmentLogo />
+                Upload the attachment
+              </div>
+              <div className={styles.internal}>
+                <FileManager
+                  isVisible={isFileManagerVisible}
+                  disabled={!isPeerConnected}
+                  handleFileCreate={handleFileCreate}
+                />
+                <TextBox
+                  isVisible={isTextBoxVisible}
+                  disabled={!isPeerConnected}
+                  value={textValue}
+                  handleChange={handleTextChange}
+                />
+              </div>
+              <FileList filesCatalog={filesCatalog} download={download} />
               <UploadsCatalog isVisible={isUploadsVisible} data={uploads} />
-              <TextBox
-                isVisible={isTextBoxVisible}
-                disabled={!isPeerConnected}
-                value={textValue}
-                handleChange={handleTextChange}
-              />
             </div>
-          </div>
+          </>
         )}
       </main>
       <footer className={styles.footer}>
