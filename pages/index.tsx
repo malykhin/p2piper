@@ -2,22 +2,15 @@ import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
 import Invite from '../components/Invite'
-// import FileList from '../components/FileList'
-// import TextBox from '../components/TextBox'
 import GitHubLogo from '../components/GitHubLogo'
-// import FileManager from '../components/FileManager'
-// import UploadsCatalog from '../components/UploadsCatalog'
-// import AttachmentLogo from '../components/AttachmentLogo'
 
 import useWebRtc from '../hooks/useWebRtc'
 import { getSessionId } from '../utils/token'
 
 import styles from '../styles/Home.module.scss'
 
-// const Invite = dynamic(() => import('../components/Invite'))
 const FileList = dynamic(() => import('../components/FileList'))
 const TextBox = dynamic(() => import('../components/TextBox'))
-// const GitHubLogo = dynamic(() => import('../components/GitHubLogo'))
 const FileManager = dynamic(() => import('../components/FileManager'))
 const UploadsCatalog = dynamic(() => import('../components/UploadsCatalog'))
 const AttachmentLogo = dynamic(() => import('../components/AttachmentLogo'))
@@ -80,7 +73,7 @@ export default function Home({ sessionId, baseUrl, gaTrackingId, token }) {
         )}
       </main>
       <footer className={styles.footer}>
-        <a href="https://github.com/malykhin/p2piper" target="_blank" rel="noreferrer">
+        <a href="https://github.com/malykhin/p2piper" aria-label="GitHub" target="_blank" rel="noreferrer">
           <GitHubLogo />
         </a>
       </footer>
