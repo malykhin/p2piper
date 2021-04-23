@@ -13,6 +13,8 @@
   padding: 16px;
   font-size: 14px;
   font-family: SF Pro Display;
+  -webkit-appearance: none;
+  box-shadow: none;
 
   &::placeholder {
     color: rgba(143, 155, 179, 1);

@@ -33,6 +33,7 @@ body {
     #369b89 93.33%,
     #369a89 100%
   );
+  background-attachment: fixed;
 }
 
 a {
