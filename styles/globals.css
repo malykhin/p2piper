@@ -1,11 +1,13 @@
 @font-face {
   font-family: SF Pro Display;
   src: url(../public/FontsFree-Net-SFProDisplay-Regular.ttf);
+  font-display: swap;
 }
 
 @font-face {
   font-family: SF Pro Display Bold;
   src: url(../public/FontsFree-Net-SFProDisplay-Bold.ttf);
+  font-display: swap;
 }
 
 html,
