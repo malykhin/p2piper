@@ -38,6 +38,8 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
   const signalingRef = useRef<SignalingChannel>()
 
   const makingOffer = useRef<boolean>(false)
+  const iceCandidatesRef = useRef<Array<RTCIceCandidate>>([])
+  const isRemoteDescriptionSetRef = useRef<boolean>(false)
   const debounceTimerId = useRef<NodeJS.Timeout>()
   const [textValue, setTextValue] = useState<string>('')
 
@@ -143,15 +145,22 @@ export default function useWebRtc(basePath: string, sessionId: string, gaTrackin
         }
         if (description) {
           await pc.setRemoteDescription(description)
+          isRemoteDescriptionSetRef.current = true
+          iceCandidatesRef.current.forEach((c) => pc?.addIceCandidate(new RTCIceCandidate(c)))
+          iceCandidatesRef.current = []
           if (description.type === 'offer') {
             const answer = await pc.createAnswer()
             await pc.setLocalDescription(answer)
             signaling.send('answer', { description: pc.localDescription })
           }
         } else if (candidate) {
-          await pc.addIceCandidate(candidate).catch((error) => {
-            log('pc.addIceCandidate', error)
-          })
+          if (isRemoteDescriptionSetRef.current) {
+            await pc.addIceCandidate(candidate).catch((error) => {
+              log('pc.addIceCandidate', error)
+            })
+          } else {
+            iceCandidatesRef.current.push(candidate)
+          }
         }
       } catch (error) {
         log('candidate_error', error)
