@@ -29,6 +29,9 @@ class SignallingChannel {
 
     this.socket.on('connect', connectCb ? connectCb : () => {})
     this.socket.on('disconnect', disconnectCb ? disconnectCb : () => {})
+    this.socket.on('root_redirect', () => {
+      window.location.search = ''
+    })
   }
 
   addHandler(channel: string, cb: (data: any) => void) {
