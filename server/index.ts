@@ -50,9 +50,9 @@ app.prepare().then(() => {
     logger.info(`connection_${sessionId}_${token}`)
 
     if (token) {
-      const roomsMap = io.of('/').adapter.rooms
+      const rooms = await (io.of('/').adapter as any).allRooms()
 
-      if (!roomsMap.has(token)) {
+      if (!rooms.has(token)) {
         logger.info(`${token} is not in the adapter, redirecting to the root`)
         socket.emit('root_redirect')
       }
