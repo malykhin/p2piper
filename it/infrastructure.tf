@@ -306,8 +306,8 @@ resource "aws_autoscaling_group" "p2piper_autoscaling_group" {
   name = "${local.name_prefix}-asg"
 
   min_size         = 1
-  desired_capacity = 2
-  max_size         = 2
+  desired_capacity = 1
+  max_size         = 1
 
   health_check_type = "EC2"
 
