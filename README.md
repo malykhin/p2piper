@@ -11,3 +11,7 @@ The transport for file transfer is WebRTC data channels. The application itself 
 **Note.** Two EC2 instances in autoscaling group here are mainly used for better availability. Application Load Balancer support WS protocol; that's why it's used instead of Classic one.
 
 Deployment is organized with CodePipeline, but set up isn't a part of `terraform` definition.
+
+# UI/UX
+
+Application design created by [Pavel Koval](https://www.linkedin.com/in/pavel-koval-866a1b84/)
