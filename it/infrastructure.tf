@@ -8,7 +8,14 @@ locals {
 }
 
 terraform {
-  required_version = "> 0.12.0"
+  required_version = "> 1.2.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
+
   backend "s3" {
     bucket = "p2piper-prod-terraform"
     key    = "p2piper.tfstate"
@@ -146,22 +153,14 @@ resource "aws_security_group" "p2piper_allow_http_sg" {
   }
 }
 
-data "template_file" "p2piper_policy_template" {
-  template = file("./templates/p2piper_ec2_policy_template.json")
-}
-
 resource "aws_iam_policy" "p2piper_policy" {
   name   = "${local.name_prefix}-p2piper_policy"
-  policy = data.template_file.p2piper_policy_template.rendered
-}
-
-data "template_file" "p2piper_instance_profile_role_template" {
-  template = file("./templates/p2piper_instance_profile_role_template.json")
+  policy = templatefile("./templates/p2piper_ec2_policy_template.json", {})
 }
 
 resource "aws_iam_role" "iam_p2piper_instance_profile_role" {
   name               = "${local.name_prefix}-iam_p2piper_instance_profile_role"
-  assume_role_policy = data.template_file.p2piper_instance_profile_role_template.rendered
+  assume_role_policy = templatefile("./templates/p2piper_instance_profile_role_template.json", {})
 }
 
 resource "aws_iam_instance_profile" "iam_p2piper_instance_profile" {
